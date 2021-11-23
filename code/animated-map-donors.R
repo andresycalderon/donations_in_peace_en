@@ -1,5 +1,5 @@
 #Animated map: Donation statistics for three local elections in Colombia
-setwd("D:/Users/USER/Documents/UR 2021-2/MCPP/Project/donations_in_peace")
+setwd("D:/Users/USER/Documents/UR 2021-2/MCPP/Project/donations_in_peace_en")
 
 #Libraries
 library(tidyverse)
@@ -154,7 +154,7 @@ map_function_donors_sum <- function(year){
       na.value = "grey80",
       limits=c(0,80),
       oob=scales::squish,
-      name= "Total donantes\npor municipio"
+      name= "Total donors\nper municipality"
     )+theme_void()+ggtitle(toString(year))+
     theme(
       legend.position = c(.85,.85),
@@ -214,7 +214,7 @@ map_function_donors_mean <- function(year){
       low = "#433413",
       limits=c(0,30),
       oob=scales::squish,
-      name= "Donantes promedio\npor candidato"
+      name= "Average no. of\ndonors per candidate"
     )+theme_void()+ggtitle(toString(year))+
     theme(
       legend.position = c(.85,.85),
@@ -276,7 +276,7 @@ map_function_amount_sum <- function(year){
       low = "#303030",
       high = "#E3E3E3",
       oob=scales::squish,
-      name= "Monto total donado\npor municipio"
+      name= "Total amount of\ndonations"
     )+theme_void()+ggtitle(toString(year))+
     theme(
       legend.position = c(.85,.85),
@@ -335,7 +335,7 @@ map_function_amount_mean <- function(year){
       high = "#52FF46",
       limits=c(0,50),
       oob=scales::squish,
-      name= "Monto promedio donado\npor candidato"
+      name= "Average donation amount\nper candidate"
     )+theme_void()+ggtitle(toString(year))+
     theme(
       legend.position = c(.85,.85),

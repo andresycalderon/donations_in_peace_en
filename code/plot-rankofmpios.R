@@ -1,6 +1,6 @@
 #Plot the top 10 municipalities by year, dividing them
 #by the presence of FARC in 2011
-setwd("D:/Users/USER/Documents/UR 2021-2/MCPP/Project/donations_in_peace")
+setwd("D:/Users/USER/Documents/UR 2021-2/MCPP/Project/donations_in_peace_en")
 
 #Libraries
 library(tidyverse)
@@ -52,10 +52,10 @@ plot_evol_fun <- function(var_index){
   outcomes <- c('donors_sum','donors_mean',
                 'amount_sum','amount_mean')
   #Generate vector of labels
-  labels <- c('Promedio de donantes totales',
-              'Promedio de donantes\npor candidato',
-              'Promedio de monto total donado\n(millones de pesos)',
-              'Promedio de monto por\ncandidato(millones de pesos)')
+  labels <- c('Average number of total donors',
+              'Average number of donors\nper candidate',
+              'Average amount of total donations\n(millions of pesos)',
+              'Average amount of donations\n per candidate(millions of pesos)')
   #Keep only the first ten by the selected variable
   first_ten_farc <- mpios_farc%>%
     arrange(across(starts_with(outcomes[var_index]),desc))%>%

@@ -1,5 +1,5 @@
 #Plot the evolution of donation variables in FARC and non-FARC municipalities
-setwd("D:/Users/USER/Documents/UR 2021-2/MCPP/Project/donations_in_peace")
+setwd("D:/Users/USER/Documents/UR 2021-2/MCPP/Project/donations_in_peace_en")
 
 #Libraries
 library(tidyverse)
@@ -60,13 +60,13 @@ farc_presence <- farc_presence%>%
 #Merge with municipality map and assign Farc Presence=0 if missing
 mapa_farc_shp <- map%>%
   left_join(farc_presence,by=c("MPIO_CCNCT"="codmpio"))%>%
-  mutate(Presencia_FARC=if_else(FARC1==1,"Con Presencia","",missing="Sin Presencia"))
+  mutate(Presencia_FARC=if_else(FARC1==1,"With FARC","",missing="Without FARC"))
 #Map of FARC presence
 mapa_farc <- mapa_farc_shp%>%
   ggplot()+
   geom_sf(aes(fill=Presencia_FARC), lwd=0)+
   geom_sf(data = dptomap, fill=NA, color="mediumpurple1", lwd=0.5)+
-  scale_fill_grey(name="Presencia de las\nFARC en 2011")+
+  scale_fill_grey(name="FARC Presence Status\nin 2011")+
   theme_void()
 
 mapa_farc
@@ -98,7 +98,7 @@ farc_presence <- farc_presence%>%
 all_mpios_panel <- all_mpios_panel%>%
   left_join(select(farc_presence,codmpio,FARC1),
             by="codmpio")%>%
-  mutate(Presencia_FARC=if_else(FARC1==1,"Con Presencia","",missing="Sin Presencia"))
+  mutate(Presencia_FARC=if_else(FARC1==1,"FARC Presence","",missing="Without FARC"))
 #Export panel to use it as inputs for other codes
 write_csv(all_mpios_panel,'data/clean/panelfinal.csv')
 #Compute mean and standard deviation of outcomes by year
@@ -118,19 +118,20 @@ plot_evol_fun <- function(var_index){
   outcomes <- c('donors_sum_mean','donors_mean_mean',
                 'amount_sum_mean','amount_mean_mean')
   #Generate vector of labels
-  labels <- c('Promedio de donantes totales',
-              'Promedio de donantes\npor candidato',
-              'Promedio de monto total donado\n(millones de pesos)',
-              'Promedio de monto por\ncandidato(millones de pesos)')
+  labels <- c('Average number of total donors',
+              'Average number of donors\nper candidate',
+              'Average amount of total donations\n(millions of pesos)',
+              'Average amount of donations\n per candidate(millions of pesos)')
   #Plot
   stats_by_farc_pres%>%
     ggplot(aes_string("yearly",outcomes[var_index],color="Presencia_FARC"))+
     geom_line()+
     geom_point()+
     scale_x_continuous(breaks = c(2011,2015,2019))+
-    scale_color_discrete(name="Presencia de las\nFARC en 2011")+
+    scale_color_discrete(name="FARC Presence Status\nin 2011")+
+    geom_vline(xintercept = 2014,linetype="dashed")+
     ylab(labels[var_index])+
-    xlab('Año de elecciones municipales')+
+    xlab('Year of local elections')+
     theme_bw()
   
   #Export plot
