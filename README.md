@@ -3,7 +3,7 @@
 ## Description and motivation
 In October 2012, the Colombian government started peace negotiations with the FARC guerrilla. This process would result in a unilateral ceasefire by the armed group in December 2014, and eventually the signing of the peace agreement in 2016.
 
-The effects of the peace process with the FARC guerrilla have been heterogeneous. Municipalities with presence of the armed group experienced a relative large decrease in the number of violent events after the creasefire, according to data from the Center of Resources to the Analysis of Conflicts (CERAC). They also improved education outcomes (Prem et al., 2021) and their fertility rate (Guerra-Cújar et al., 2021). However, the process also generated perverse incentives that augmented deforestation (Prem, Saavedra, et al., 2020), illicit crops (Prem, Vargas, et al., 2020), and the assassination of social leaders (Marín Llanes, 2020). 
+The effects of the peace process with the FARC guerrilla have been heterogeneous. Municipalities with presence of the armed group experienced a relative large decrease in the number of violent events after the creasefire, according to data from the Conflict Analysis Resource Center (CERAC). They also improved education outcomes (Prem et al., 2021) and their fertility rate (Guerra-Cújar et al., 2021). However, the process also generated perverse incentives that augmented deforestation (Prem, Saavedra, et al., 2020), illicit crops (Prem, Vargas, et al., 2020), and the assassination of social leaders (Marín Llanes, 2020). 
 
 What is the impact of the peace process on private investment? *A priori,* one would expect an increase in this variable because the reduction in conflict and the benefits of the peace agreement in the affected areas should improve the business confidence. An especial type of investment are donations to political campaings. In this project I seek to identify if political donations increased in municipalities with FARC presence after the ceasefire and the peace agreement.
 
@@ -31,18 +31,20 @@ Project presentation in PDF (in Spanish) can be found [here](presentation/presen
    - Compute the variables of interest by municipality
 - You cand find the Jupyter Notebook code [here](code/merge_donors_datasets.ipynb)
 ### Making plots and maps in R
-- Con los datos de donación a nivel de municipio, construí las siguientes figuras en R:
-  - Mapas que reflejan la distribución municipal de las variables de interés por año (Código [aquí](code/animated-map-donors.R)).
-  - Top 10 municipios con los mayores valores en donación, según variable (Código [aquí](code/plot-rankofmpios.R)).
-  - Evolución de las variables de interés en los tres años electorales, para los municipios con y sin presencia de las FARC en 2011 (Código [aquí](code/plot-evolutions-byfarc.R))
-### Regresión lineal en R para estimar impacto del cese al fuego
-- Usando la librería *Fixest*, estimé un modelo de diferencias en diferencias para identificar el impacto del cese al fuego sobre las estadísticas de donación. La ecuación a estimar es la siguiente:
+- I built the following figures in R using the donation aggregates at the municipality-year level:
+  - Maps showing the spatial distribution of the outcomes of interest (one per variable and electoral year). You can find the code [here](code/animated-map-donors.R).
+  - Top 10 municipalities with the highest average number of donors and amount donated (one per outcome). You can find the code [here](code/plot-rankofmpios.R).
+  - Evolution of the otcomes of interest over the three electoral years, differentiating by status of FARC presence in 2011 (one figure per outcome). You can find the code [here](code/plot-evolutions-byfarc.R).
+### Difference-in-difference to estimate the impact of the ceasefire on donation statistics
+- I used the library *Fixest* to estimate a differe-in-difference design that identifies the impact of the ceasefire on donation statistics at the municipality level. The design was applied in the following TWFE equation:
 
 <p align="center"> <img src="https://render.githubusercontent.com/render/math?math=Y_{it} = \alpha_i %2B \gamma_t %2B \beta (Ceasefire \times FARC) %2B \varepsilon_{it}"></p>
-Esta ecuación incluye efectos fijos de municipio (i), y de año de elección (t). (Ceasefile x FARC) es una dummy que toma el valor de 1 para municipios con presencia de las FARC después de 2014, y 0 si no se cummplen ambas condiciones. 
+This equation includes municipality fixed effects (i), and electoral year fixed effects (t). (Ceasefile x FARC) is a dummy taking the value of 1 for the municipalities with FARC presence after 2014 (ceasefire period), and zero if both conditions are not satisfied. The coefficient related to that variable is the difference-in-difference estimator. In this case, the standard errors are clustered at the municipality level.
 
-## Hallazgos
-### Distribución espacial de las variables de interés (2011)
+- You can find the code that estimates the equation [here](code/run-twfe-regressions.R) .
+
+## Findings
+### Spatial distribution of the outcomes of interest (2011).
 Las siguientes gráficas muestran cómo se distribuyen espacialmente las variables de interés para el año 2011. Las figuras para el resto de años se encuentran en el siguiente [enlace](output/evol-by-municipality/)
 
 En términos generales, los donantes se encuentran concentrados en las grandes ciudades. Lo mismo sucede con el monto donado. 
@@ -56,7 +58,7 @@ Las siguientes figuras enseñan el top 10 de municipios sin (en azul) y con (en 
 <img src="output/top10_donors_mean_nonfarc.png" width="500"> <img src="output/top10_donors_mean_farc.png" width="500">
 <img src="output/top10_amount_sum_nonfarc.png" width="500"> <img src="output/top10_amount_sum_farc.png" width="500">
 
-### Evaluación del impacto del cese al fuego sobre la donación privada
+### Impact evaluation of the ceasefire and the peace agreement on private donations
 
 El modelo de diferencias en diferencias evalúa la evolución del *outcome* en el grupo de tratados (en este caso, municipios con presencia de las FARC) después del tratamiento, y la compara con la evolución en el grupo de control (en este caso, municipios sin presencia de las FARC). 
 
@@ -65,7 +67,7 @@ Para este estudio se esperaría que la donación creciera relativamente en los m
 <img src="output/evol_donors_sum_mean.png" width="500"><img src="output/evol_donors_mean_mean.png" width="500">
 <img src="output/evol_amount_sum_mean.png" width="500"><img src="output/evol_amount_mean_mean.png" width="500">
 
-#### Estimación del modelo de diferencias en diferencias:
+#### Difference-in-differences estimation results
 Debido a que las gráficas no muestran un efecto claro del proceso de paz sobre las donaciones, se procede a estimar la ecuación de efectos fijos. La siguiente tabla muestra los coeficientes y sus respectivos errores estándar en paréntesis. 
 
 Si bien los coeficientes estimados tienen signo positivo (a excepción del de donantes por candidato), ninguno es estadísticamente diferente de cero bajo un nivel de significancia menor al 10%. Por tanto, por lo menos para las donaciones a candidatos a alcaldía, no se puede concluir que el cese al fuego y el acuerdo de paz generaron aumentos en la inversión política. 
@@ -83,11 +85,7 @@ Si bien los coeficientes estimados tienen signo positivo (a excepción del de do
 |  **Observations**   |       3,365       |       3,365        |      2,421      |       2,421       |
 |       **R2**        |       0.779       |       0.547        |      0.726      |       0.676       |
 
-### Agenda a futuro:
-- Incorporar nuevas corporaciones (concejos y juntas de acción comunal)
-- Añadir más variables que demuestren la inversión privada en los municipios
-
-## Referencias
+## References
 Guerra-Cújar, M. E., Prem, M., Rodríguez-Lesmes, P., & Vargas, J. F. (2021). A Peace Baby Boom? Evidence from Colombia’s Peace Agreement. https://doi.org/10.31235/osf.io/c2ypd
 
 Marín Llanes, L. (2020). Unintended Consequences of Alternative Development Programs: Evidence From Colombia’s Illegal Crop Substitution. Documento CEDE, No. 40. https://doi.org/10.2139/ssrn.3706297
